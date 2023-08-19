@@ -971,7 +971,7 @@ class VariantSelects extends HTMLElement {
       this.setUnavailable();
     } else {
       this.updateMedia();
-      this.updateURL();
+      // this.updateURL();
       this.filterMedia();
       this.updateVariantInput();
       this.renderProductInfo();
@@ -981,11 +981,9 @@ class VariantSelects extends HTMLElement {
 
   filterMedia() {
     const allThumbnailColors = document.querySelectorAll('[thumbnail-color]');
-
     allThumbnailColors.forEach(thumbnail => {
       thumbnail.style.display = 'none';
     });
-
     const selected_variant = this.currentVariant.featured_media.alt;
     const selected_attribute = '[thumbnail-color="' + selected_variant + '"]';
     const elements = document.querySelectorAll(selected_attribute);
