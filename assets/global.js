@@ -798,7 +798,7 @@ class SlideshowComponent extends SliderComponent {
 
   setSlidePosition(position) {
     if (this.setPositionTimeout) clearTimeout(this.setPositionTimeout);
-    this.setPositionTimeout = setTimeout (() => {
+    this.setPositionTimeout = setTimeout(() => {
       this.slider.scrollTo({
         left: position,
       });
@@ -972,10 +972,26 @@ class VariantSelects extends HTMLElement {
     } else {
       this.updateMedia();
       this.updateURL();
+      this.filterMedia();
       this.updateVariantInput();
       this.renderProductInfo();
       this.updateShareUrl();
     }
+  }
+
+  filterMedia() {
+    const allThumbnailColors = document.querySelectorAll('[thumbnail-color]');
+
+    allThumbnailColors.forEach(thumbnail => {
+      thumbnail.style.display = 'none';
+    });
+
+    const selected_variant = this.currentVariant.featured_media.alt;
+    const selected_attribute = '[thumbnail-color="' + selected_variant + '"]';
+    const elements = document.querySelectorAll(selected_attribute);
+    elements.forEach(element => {
+      element.style.display = ''
+    });
   }
 
   updateOptions() {
