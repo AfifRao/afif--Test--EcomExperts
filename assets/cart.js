@@ -18,7 +18,7 @@ class CartRemoveButton extends HTMLElement {
               cartItems.updateQuantity(index, 0);
             }
           });
-        }, 1200)
+        }, 1000)
       }
     });
   }
@@ -57,10 +57,27 @@ class CartItems extends HTMLElement {
   }
 
   onChange(event) {
+    const itemRow = event.target.closest('.cart-item')
+    var variantId = itemRow.querySelector(".attachedBundleId")
+    var value = event.target.value;
+    var btnName = document.activeElement.getAttribute('name')
     this.updateQuantity(event.target.dataset.index, event.target.value, document.activeElement.getAttribute('name'), event.target.dataset.quantityVariantId);
+    
+    var that = this
+    if (variantId) {
+      setTimeout(function () {
+        document.querySelectorAll('.cart-item[data-variantId]').forEach(cartItem => {
+          const itemId = cartItem.getAttribute('data-variantId');
+          if (itemId === variantId.innerText) {
+            const index = cartItem.querySelector("cart-remove-button").dataset.index
+            that.updateQuantity(index, value, btnName, itemId);            
+          }
+        });
+      }, 1200)
+    }  
   }
 
-  onCartUpdate() {
+  onCartUpdate() { 
     if (this.tagName === 'CART-DRAWER-ITEMS') {
       fetch(`${routes.cart_url}?section_id=cart-drawer`)
         .then((response) => response.text())

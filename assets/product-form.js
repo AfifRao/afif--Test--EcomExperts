@@ -64,7 +64,7 @@ if (!customElements.get('product-form')) {
               window.location = window.routes.cart_url;
               return;
             }
-
+            this.addBundleProductToCart();
             if (!this.error)
               publish(PUB_SUB_EVENTS.cartUpdate, { source: 'product-form', productVariantId: formData.get('id'), cartData: response });
             this.error = false;
@@ -88,7 +88,6 @@ if (!customElements.get('product-form')) {
             console.error(e);
           })
           .finally(() => {
-            this.addBundleProductToCart();
             this.submitButton.classList.remove('loading');
             if (this.cart && this.cart.classList.contains('is-empty')) this.cart.classList.remove('is-empty');
             if (!this.error) this.submitButton.removeAttribute('aria-disabled');
@@ -118,16 +117,14 @@ if (!customElements.get('product-form')) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             dataType: 'json',
-            body: JSON.stringify({ quantity: 1, id: "46488107155769" })
+            body: JSON.stringify({ quantity: document.querySelector("quantity-input").querySelector(".quantity__input").value, id: "46488107155769" })
           })
             .then(response => response.json())
             .then(data => {
-              // Handle the response, e.g., show a success message
-              console.log('Item added to cart:', data);
+              console.log('Item added to cart');
             })
             .catch(error => {
-              // Handle errors, e.g., display an error message
-              console.error('Error adding item to cart:', error);
+              console.error('Error adding item to cart');
             });
         }
       }
