@@ -4,8 +4,22 @@ class CartRemoveButton extends HTMLElement {
 
     this.addEventListener('click', (event) => {
       event.preventDefault();
-      const cartItems = this.closest('cart-items') || this.closest('cart-drawer-items');
+      var cartItems = this.closest('cart-items') || this.closest('cart-drawer-items');
+      const itemRow = this.closest('.cart-item')
+      var variantId = itemRow.querySelector(".attachedBundleId")
       cartItems.updateQuantity(this.dataset.index, 0);
+
+      if (variantId) {
+        setTimeout(function () {
+          document.querySelectorAll('.cart-item[data-variantId]').forEach(cartItem => {
+            const itemId = cartItem.getAttribute('data-variantId');
+            if (itemId === variantId.innerText) {
+              const index = cartItem.querySelector("cart-remove-button").dataset.index
+              cartItems.updateQuantity(index, 0);
+            }
+          });
+        }, 1200)
+      }
     });
   }
 }
