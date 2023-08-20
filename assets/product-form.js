@@ -114,7 +114,6 @@ if (!customElements.get('product-form')) {
       addBundleProductToCart() {
         const productProperty = document.getElementById("bundleProduct");
         if (productProperty.value) {
-          console.log("in if")
           fetch('/cart/add.js', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
