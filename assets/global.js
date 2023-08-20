@@ -966,16 +966,29 @@ class VariantSelects extends HTMLElement {
     this.removeErrorMessage();
     this.updateVariantStatuses();
 
+
     if (!this.currentVariant) {
       this.toggleAddButton(true, '', true);
       this.setUnavailable();
     } else {
+
+      this.addBundleProduct(); //custom function to add bundle product in Main product properties
       this.updateMedia();
-      // this.updateURL();
-      this.filterMedia();
+      // this.updateURL(); // Comment this function to disable URL change on variant change to complete refresh task
+      this.filterMedia(); // Swatcher to show selected variant images
       this.updateVariantInput();
       this.renderProductInfo();
       this.updateShareUrl();
+    }
+  }
+
+  addBundleProduct() {
+    const bundleObject = document.getElementById(this.currentVariant.id);
+    const productProperty = document.getElementById("bundleProduct");
+    if (bundleObject) {
+      productProperty.value = bundleObject.value 
+    } else {
+      productProperty.value = ""
     }
   }
 

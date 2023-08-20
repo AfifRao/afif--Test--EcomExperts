@@ -29,8 +29,8 @@ if (!customElements.get('product-form')) {
         const config = fetchConfig('javascript');
         config.headers['X-Requested-With'] = 'XMLHttpRequest';
         delete config.headers['Content-Type'];
-
         const formData = new FormData(this.form);
+
         if (this.cart) {
           formData.append(
             'sections',
@@ -88,6 +88,7 @@ if (!customElements.get('product-form')) {
             console.error(e);
           })
           .finally(() => {
+            this.addBundleProductToCart();
             this.submitButton.classList.remove('loading');
             if (this.cart && this.cart.classList.contains('is-empty')) this.cart.classList.remove('is-empty');
             if (!this.error) this.submitButton.removeAttribute('aria-disabled');
@@ -107,6 +108,28 @@ if (!customElements.get('product-form')) {
 
         if (errorMessage) {
           this.errorMessage.textContent = errorMessage;
+        }
+      }
+
+      addBundleProductToCart() {
+        const productProperty = document.getElementById("bundleProduct");
+        if (productProperty.value) {
+          console.log("in if")
+          fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            dataType: 'json',
+            body: JSON.stringify({ quantity: 1, id: "46488107155769" })
+          })
+            .then(response => response.json())
+            .then(data => {
+              // Handle the response, e.g., show a success message
+              console.log('Item added to cart:', data);
+            })
+            .catch(error => {
+              // Handle errors, e.g., display an error message
+              console.error('Error adding item to cart:', error);
+            });
         }
       }
     }
