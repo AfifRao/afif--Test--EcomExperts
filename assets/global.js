@@ -975,7 +975,6 @@ class VariantSelects extends HTMLElement {
       this.addBundleProduct(); //custom function to add bundle product in Main product properties
       this.updateMedia();
       // this.updateURL(); // Comment this function to disable URL change on variant change to complete refresh task
-      this.filterMedia(); // Swatcher to show selected variant images
       this.updateVariantInput();
       this.renderProductInfo();
       this.updateShareUrl();
@@ -990,19 +989,6 @@ class VariantSelects extends HTMLElement {
     } else {
       productProperty.value = ""
     }
-  }
-
-  filterMedia() {
-    const allThumbnailColors = document.querySelectorAll('[thumbnail-color]');
-    allThumbnailColors.forEach(thumbnail => {
-      thumbnail.style.display = 'none';
-    });
-    const selected_variant = this.currentVariant.featured_media.alt;
-    const selected_attribute = '[thumbnail-color="' + selected_variant + '"]';
-    const elements = document.querySelectorAll(selected_attribute);
-    elements.forEach(element => {
-      element.style.display = ''
-    });
   }
 
   updateOptions() {
