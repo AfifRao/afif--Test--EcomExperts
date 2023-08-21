@@ -28,7 +28,6 @@ Usage:
     value="{{ bundle_product_id }}"
     form="product-form-{{ section.id }}"
     class="field__input"
-    style="border: 1px solid red"
     type="hidden"
     name="properties[Bundle Variant]">
 
@@ -67,10 +66,14 @@ Usage:
           <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
             {{ option.name }}
           </label>
-          <div class="select">
+          <div
+            class="select"
+            {% if option.name == "Color" %}
+            style="display: none;"
+            {% endif %}>
             <select
               id="Option-{{ section.id }}-{{ forloop.index0 }}"
-              class="select__select"
+              class="select__select {% if option.name == "Color" %} hidden-dropdown {% endif %}"
               name="options[{{ option.name | escape }}]"
               form="{{ product_form_id }}">
               {% render 'product-variant-options', product: product, option: option, block: block %}
@@ -78,6 +81,9 @@ Usage:
             {% render 'icon-caret' %}
           </div>
         </div>
+        {% if option.name == "Color" %}
+          {% render 'custom-color-swatcher' %}
+        {% endif %}
       {%- endfor -%}
 
       <script type="application/json">

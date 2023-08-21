@@ -13,7 +13,7 @@ class CartRemoveButton extends HTMLElement {
         setTimeout(function () {
           document.querySelectorAll('.cart-item[data-variantId]').forEach(cartItem => {
             const itemId = cartItem.getAttribute('data-variantId');
-            if (itemId === variantId.innerText) {
+            if (itemId === variantId.innerText.replace(/(\r\n|\n|\r)/gm, "")) {
               const index = cartItem.querySelector("cart-remove-button").dataset.index
               cartItems.updateQuantity(index, 0);
             }
@@ -68,7 +68,7 @@ class CartItems extends HTMLElement {
       setTimeout(function () {
         document.querySelectorAll('.cart-item[data-variantId]').forEach(cartItem => {
           const itemId = cartItem.getAttribute('data-variantId');
-          if (itemId === variantId.innerText) {
+          if (itemId === variantId.innerText.replace(/(\r\n|\n|\r)/gm, "")) {
             const index = cartItem.querySelector("cart-remove-button").dataset.index
             that.updateQuantity(index, value, btnName, itemId);            
           }
