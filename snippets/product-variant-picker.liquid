@@ -1,15 +1,36 @@
 {% comment %}
-  Renders product variant-picker
+Renders product variant-picker
 
-  Accepts:
-  - product: {Object} product object.
-  - block: {Object} passing the block information.
-  - product_form_id: {String} Id of the product form to which the variant picker is associated.
-  - update_url: {Boolean} whether or not to update url when changing variants. If false, the url isn't updated. Default: true (optional).
-  Usage:
-  {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
+Accepts:
+- product: {Object} product object.
+- block: {Object} passing the block information.
+- product_form_id: {String} Id of the product form to which the variant picker is associated.
+- update_url: {Boolean} whether or not to update url when changing variants. If false, the url isn't updated. Default: true (optional).
+Usage:
+{% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
 {% endcomment %}
 {%- unless product.has_only_default_variant -%}
+
+  {%- for variant in product.variants -%}
+    {% if variant.metafields.custom.bundle %}
+      {% assign variant_id = variant.id %}
+      {% assign bundle_product_id = variant.metafields.custom.bundle.value.variants.first.id %}
+    {% endif %}
+  {%- endfor -%}
+
+  <input
+    type="hidden"
+    id="{{ variant_id }}"
+    value="{{ bundle_product_id }}">
+
+  <input
+    id="bundleProduct"
+    value="{{ bundle_product_id }}"
+    form="product-form-{{ section.id }}"
+    class="field__input"
+    type="hidden"
+    name="properties[Bundle Variant]">
+
   {%- if block.settings.picker_type == 'button' -%}
     <variant-radios
       id="variant-radios-{{ section.id }}"
@@ -17,10 +38,9 @@
       data-section="{{ section.id }}"
       data-url="{{ product.url }}"
       {% if update_url == false %}
-        data-update-url="false"
+      data-update-url="false"
       {% endif %}
-      {{ block.shopify_attributes }}
-    >
+      {{ block.shopify_attributes }}>
       {%- for option in product.options_with_values -%}
         <fieldset class="js product-form__input">
           <legend class="form__label">{{ option.name }}</legend>
@@ -38,27 +58,32 @@
       data-section="{{ section.id }}"
       data-url="{{ product.url }}"
       {% if update_url == false %}
-        data-update-url="false"
+      data-update-url="false"
       {% endif %}
-      {{ block.shopify_attributes }}
-    >
+      {{ block.shopify_attributes }}>
       {%- for option in product.options_with_values -%}
         <div class="product-form__input product-form__input--dropdown">
           <label class="form__label" for="Option-{{ section.id }}-{{ forloop.index0 }}">
             {{ option.name }}
           </label>
-          <div class="select">
+          <div
+            class="select"
+            {% if option.name == "Color" %}
+            style="display: none;"
+            {% endif %}>
             <select
               id="Option-{{ section.id }}-{{ forloop.index0 }}"
-              class="select__select"
+              class="select__select {% if option.name == "Color" %} hidden-dropdown {% endif %}"
               name="options[{{ option.name | escape }}]"
-              form="{{ product_form_id }}"
-            >
+              form="{{ product_form_id }}">
               {% render 'product-variant-options', product: product, option: option, block: block %}
             </select>
             {% render 'icon-caret' %}
           </div>
         </div>
+        {% if option.name == "Color" %}
+          {% render 'custom-color-swatcher' %}
+        {% endif %}
       {%- endfor -%}
 
       <script type="application/json">
@@ -78,18 +103,16 @@
         name="id"
         id="Variants-{{ section.id }}"
         class="select__select"
-        form="{{ product_form_id }}"
-      >
+        form="{{ product_form_id }}">
         {%- for variant in product.variants -%}
           <option
             {% if variant == product.selected_or_first_available_variant %}
-              selected="selected"
+            selected="selected"
             {% endif %}
             {% if variant.available == false %}
-              disabled
+            disabled
             {% endif %}
-            value="{{ variant.id }}"
-          >
+            value="{{ variant.id }}">
             {%- liquid
               echo variant.title
               echo variant.price | money | strip_html | prepend: ' - '

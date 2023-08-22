@@ -1,0 +1,50 @@
+<div id="radio-buttons" class="color-swatch"></div>
+{% style %}
+  .color-swatch {
+    margin-bottom: 1.2rem;
+  }
+  .color-swatch label {
+    cursor: pointer;
+  }
+
+  .color-swatch input {
+    display: none;
+  }
+
+  .color-swatch input[type="radio"]:checked + .swatch {
+    box-shadow: inset 0 0 0 4px white;
+  }
+
+  .color-swatch .swatch {
+    display: inline-block;
+    vertical-align: middle;
+    height: 32px;
+    width: 32px;
+    margin: 0 10px 0 0;
+    border: 1px solid #d4d4d4;
+  }
+{% endstyle %}
+<script>
+  const options = document.querySelectorAll(".hidden-dropdown option");
+  const radioContainer = document.querySelector("#radio-buttons");
+  options.forEach((option, i) => {
+    const label = document.createElement('label');
+    const radio = document.createElement("input");
+    radio.setAttribute("type", "radio");
+    radio.setAttribute("name", "color");
+    radio.setAttribute("value", option.value);
+    radio.checked = i === 0;
+
+    const swatchSpan = document.createElement('span');
+    swatchSpan.classList.add('swatch'); // Add the 'swatch' class
+    swatchSpan.style.backgroundColor = option.value;
+
+    radio.addEventListener("click", () => {
+      document.querySelector(".hidden-dropdown").value = option.value;
+    });
+
+    label.appendChild(radio);
+    label.appendChild(swatchSpan);
+    radioContainer.appendChild(label);
+  });
+</script>

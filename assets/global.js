@@ -798,7 +798,7 @@ class SlideshowComponent extends SliderComponent {
 
   setSlidePosition(position) {
     if (this.setPositionTimeout) clearTimeout(this.setPositionTimeout);
-    this.setPositionTimeout = setTimeout (() => {
+    this.setPositionTimeout = setTimeout(() => {
       this.slider.scrollTo({
         left: position,
       });
@@ -970,11 +970,22 @@ class VariantSelects extends HTMLElement {
       this.toggleAddButton(true, '', true);
       this.setUnavailable();
     } else {
+      this.addBundleProduct(); //custom function to add bundle product in Main product properties
       this.updateMedia();
-      this.updateURL();
+      // this.updateURL(); // Comment this function to disable URL change on variant change to complete refresh task
       this.updateVariantInput();
       this.renderProductInfo();
       this.updateShareUrl();
+    }
+  }
+
+  addBundleProduct() {
+    const bundleObject = document.getElementById(this.currentVariant.id);
+    const productProperty = document.getElementById("bundleProduct");
+    if (bundleObject) {
+      productProperty.value = bundleObject.value
+    } else {
+      productProperty.value = ""
     }
   }
 
@@ -1050,7 +1061,7 @@ class VariantSelects extends HTMLElement {
       if (listOfAvailableOptions.includes(input.getAttribute('value'))) {
         input.innerText = input.getAttribute('value');
       } else {
-        input.innerText = window.variantStrings.unavailable_with_option.replace('[value]', input.getAttribute('value'));
+        input.innerText = "Unselected"
       }
     });
   }
@@ -1076,6 +1087,7 @@ class VariantSelects extends HTMLElement {
   }
 
   renderProductInfo() {
+    var selectedVariant = this.currentVariant
     const requestedVariantId = this.currentVariant.id;
     const sectionId = this.dataset.originalSection ? this.dataset.originalSection : this.dataset.section;
 
@@ -1134,11 +1146,17 @@ class VariantSelects extends HTMLElement {
         if (inventoryDestination)
           inventoryDestination.classList.toggle('visibility-hidden', inventorySource.innerText === '');
 
-        const addButtonUpdated = html.getElementById(`ProductSubmitButton-${sectionId}`);
-        this.toggleAddButton(
-          addButtonUpdated ? addButtonUpdated.hasAttribute('disabled') : true,
-          window.variantStrings.soldOut
-        );
+          if (selectedVariant.options.includes("Unselected")) {
+            // Customize cart and buy button for Unselected variant
+            this.toggleAddButton(true,"Unavailable") 
+          } else {
+            document.getElementById(`buttonsContainer-${sectionId}`).classList.remove("disable-container");
+            const addButtonUpdated = html.getElementById(`ProductSubmitButton-${sectionId}`);
+            this.toggleAddButton(
+              addButtonUpdated ? addButtonUpdated.hasAttribute('disabled') : true,
+              window.variantStrings.soldOut
+            );
+          }
 
         publish(PUB_SUB_EVENTS.variantChange, {
           data: {

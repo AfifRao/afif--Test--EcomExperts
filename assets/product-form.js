@@ -29,8 +29,8 @@ if (!customElements.get('product-form')) {
         const config = fetchConfig('javascript');
         config.headers['X-Requested-With'] = 'XMLHttpRequest';
         delete config.headers['Content-Type'];
-
         const formData = new FormData(this.form);
+
         if (this.cart) {
           formData.append(
             'sections',
@@ -64,7 +64,7 @@ if (!customElements.get('product-form')) {
               window.location = window.routes.cart_url;
               return;
             }
-
+            this.addBundleProductToCart();
             if (!this.error)
               publish(PUB_SUB_EVENTS.cartUpdate, { source: 'product-form', productVariantId: formData.get('id'), cartData: response });
             this.error = false;
@@ -107,6 +107,25 @@ if (!customElements.get('product-form')) {
 
         if (errorMessage) {
           this.errorMessage.textContent = errorMessage;
+        }
+      }
+
+      addBundleProductToCart() {
+        const productProperty = document.getElementById("bundleProduct");
+        if (productProperty.value) {
+          fetch('/cart/add.js', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            dataType: 'json',
+            body: JSON.stringify({ quantity: document.querySelector("quantity-input").querySelector(".quantity__input").value, id: "46488107155769" })
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Item added to cart');
+            })
+            .catch(error => {
+              console.error('Error adding item to cart');
+            });
         }
       }
     }

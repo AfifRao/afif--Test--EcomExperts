@@ -1598,3 +1598,9 @@ a.product__text {
     border: none;
   }
 }
+
+.disable-container {
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
+}

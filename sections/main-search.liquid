@@ -213,6 +213,17 @@
               <div class="loading-overlay gradient"></div>
               <ul class="grid product-grid  grid--{{ section.settings.columns_mobile }}-col-tablet-down grid--{{ section.settings.columns_desktop }}-col-desktop" role="list">
                 {%- for item in search.results -%}
+                  {% comment %} Hide products with bundle tag {% endcomment %}
+                  {% assign show = true %}
+                  {%- for tag in item.tags -%}
+                      {% if tag contains "bundle" %}
+                      {% assign show = false %}
+                      {% endif %}
+                  {% endfor %}
+                  {% if show == false %}
+                    {% continue %}
+                  {% endif %}
+                  {% comment %} end {% endcomment %}
                   {% assign lazy_load = false %}
                   {%- if forloop.index > 2 -%}
                     {%- assign lazy_load = true -%}
